@@ -1,0 +1,91 @@
+using System;
+using System.Collections.Generic;
+
+class Funcionario {
+    public int Id { get; }
+    public string Nome { get; }
+    private double salario;
+
+    public double Salario {
+        get { return salario; }
+        set {
+            if (value > salario) {
+                salario = value;
+            } else {
+                Console.WriteLine("O salário só pode ser aumentado.");
+            }
+        }
+    }
+
+    public Funcionario(int id, string nome, double salario) {
+        Id = id;
+        Nome = nome;
+        Salario = salario;
+    }
+
+    public void AumentarSalario(double percentual) {
+        double aumento = Salario * percentual / 100;
+        Salario += aumento;
+    }
+}
+
+class ListaFuncionarios {
+    private List<Funcionario> funcionarios;
+
+    public ListaFuncionarios() {
+        funcionarios = new List<Funcionario>();
+    }
+
+    public void AdicionarFuncionario(Funcionario funcionario) {
+        if (!funcionarios.Exists(f => f.Id == funcionario.Id)) {
+            funcionarios.Add(funcionario);
+        } else {
+            Console.WriteLine("Já existe um funcionário com este ID.");
+        }
+    }
+
+    public void AumentarSalario(int id, double percentual) {
+        Funcionario funcionario = funcionarios.Find(f => f.Id == id);
+        if (funcionario != null) {
+            funcionario.AumentarSalario(percentual);
+        } else {
+            Console.WriteLine("Este ID não existe.");
+        }
+    }
+
+    public void MostrarFuncionarios() {
+        foreach (var funcionario in funcionarios) {
+            Console.WriteLine($"{funcionario.Id}, {funcionario.Nome}, {funcionario.Salario:F2}");
+        }
+    }
+}
+
+class Program {
+    static void Main(string[] args) {
+        Console.Write("Quantidade De Fucionarios registrados? ");
+        int n = int.Parse(Console.ReadLine());
+
+        ListFuncionarios lista = new ListFuncionarios();
+
+        for (int i = 1; i <= n; i++) {
+            Console.WriteLine($"Func #{i}:");
+            Console.Write("Id: ");
+            int id = int.Parse(Console.ReadLine());
+            Console.Write("Nome: ");
+            string nome = Console.ReadLine();
+            Console.Write("Salário: ");
+            double salario = double.Parse(Console.ReadLine());
+            lista.AdicionarFuncionario(new Funcionario(id, nome, salario));
+        }
+
+        Console.Write("Entre com o ID de quem receberá o reajuste: ");
+        int idReajuste = int.Parse(Console.ReadLine());
+        Console.Write("Entre com a porcentagem: ");
+        double percentual = double.Parse(Console.ReadLine());
+
+        lista.aumentosalarial(idReajuste, percentual);
+
+        Console.WriteLine(" atualizada:");
+        lista.MostrarFuncionarios();
+    }
+}
